@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Dmcz\FilterBlocks\Tests;
+namespace Dmcz\LogicExpr\Tests;
 
-use Dmcz\FilterBlocks\Condition;
-use Dmcz\FilterBlocks\Operator;
+use Dmcz\LogicExpr\Condition;
+use Dmcz\LogicExpr\Operator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 

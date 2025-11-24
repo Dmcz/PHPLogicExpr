@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dmcz\FilterBlocks;
+namespace Dmcz\LogicExpr;
 
 /**
  * Identifier表示一个“标识符”

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Dmcz\FilterBlocks\Tests;
+namespace Dmcz\LogicExpr\Tests;
 
-use Dmcz\FilterBlocks\Constraint;
+use Dmcz\LogicExpr\Constraint;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 

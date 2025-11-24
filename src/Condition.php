@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Dmcz\FilterBlocks;
+namespace Dmcz\LogicExpr;
 
 use Closure;
-use Dmcz\FilterBlocks\Compilers\Explainer;
+use Dmcz\LogicExpr\Compilers\Explainer;
 use InvalidArgumentException;
 
 class Condition extends ExpressionTree
@@ -275,6 +275,6 @@ class Condition extends ExpressionTree
 
     public function explain(): string
     {
-        return $this->explainer->compileExpressionTree($this);
+        return $this->explainer->compile($this);
     }
 }

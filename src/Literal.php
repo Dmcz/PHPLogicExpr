@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dmcz\FilterBlocks;
+namespace Dmcz\LogicExpr;
 
 /**
  * Literal 表示一个字面量值

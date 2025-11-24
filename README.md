@@ -1,6 +1,6 @@
 # 基本概念
 ## 表达式
-* 左操作符+运算符+右操作符为表达式，例如: `a > 1`
+* 左操作符+运算符+右操作符为表达式，例如: `a > 1`, `1 >= a`, `1 = 1`, `a != b`
 ## 条件表达式
 * 将多个表达式按照统一的逻辑关系（AND 或 OR）组合在一起，形成一个具有明确优先级和逻辑边界的复合表达式称为条件表达式，例如：`foo = 0 AND bar = 2`
 * 条件表达式内通过括号表示优先级，我们将括号内的表达式称为表达式组，例如：`(foo > 0 AND foo < 10) or bar = "a"`
@@ -69,3 +69,10 @@ new Constraint("foo")
 ->or(fn (Constraint $constraint) => $constraint->greateEqual(20)->lessEqual(30))
 
 ```
+
+
+$filter = new Filter()
+$filter->foo = "a"
+$filter->orWhere(function(Filter $filter){
+    $filer->bar = "b"
+})

@@ -1,17 +1,17 @@
 {
-    "name": "dmcz/filter-blocks",
-    "description": "一个用于构建复杂的过滤条件、范围判断与逻辑组合的库。A library for building complex filters, ranges, and logical expressions.",
+    "name": "dmcz/logic-expr",
+    "description": "一个用于构建条件表达式的库。A library for building logical expressions.",
     "type": "library",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Dmcz\\FilterBlocks\\": "src/"
+            "Dmcz\\LogicExpr\\": "src/"
         }
         
     },
     "autoload-dev": {
         "psr-4": {
-            "Dmcz\\FilterBlocks\\Tests\\": "tests/"
+            "Dmcz\\LogicExpr\\Tests\\": "tests/"
         }
     },
     "authors": [
@@ -22,7 +22,8 @@
     ],
     "require-dev": {
         "phpunit/phpunit": "^12.4",
-        "friendsofphp/php-cs-fixer": "^3.90"
+        "friendsofphp/php-cs-fixer": "^3.90",
+        "hyperf/database": "^3.1"
     },
     "scripts": {
         "test": "phpunit",

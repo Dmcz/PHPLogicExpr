@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dmcz\FilterBlocks;
+namespace Dmcz\LogicExpr;
 
 use LogicException;
 
@@ -44,6 +44,11 @@ class ExpressionTree
     public function getExpressions(): array
     {
         return $this->expressions;
+    }
+
+    public function countExpressions(): int
+    {
+        return count($this->expressions);
     }
 
     public function getLogic(): ?Logic

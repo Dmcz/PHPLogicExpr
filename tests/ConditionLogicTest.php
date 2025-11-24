@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Dmcz\FilterBlocks\Tests;
+namespace Dmcz\LogicExpr\Tests;
 
-use Dmcz\FilterBlocks\Condition;
-use Dmcz\FilterBlocks\Constraint;
+use Dmcz\LogicExpr\Condition;
+use Dmcz\LogicExpr\Constraint;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -64,8 +64,9 @@ class ConditionLogicTest extends TestCase
                     fn () => (new Condition())->where(fn (Condition $condition) => $condition->where('foo', 'a')->orWhere('foo', 'b'))->where(fn (Condition $condition) => $condition->where('bar', 'b')->orWhere('baz', 'c')),
                 ],
             ],
-            [
-                'expected' => '(foo = 1 or (foo = 2 and bar = 3)) or (foo = 3 and bar = 4) or baz in 7,8,9',
+            [   
+                // 多余的括号会被移除
+                'expected' => 'foo = 1 or (foo = 2 and bar = 3) or (foo = 3 and bar = 4) or baz in 7,8,9',
                 'builders' => [
                     function () {
                         return (new Condition())->where(function (Condition $condition) {

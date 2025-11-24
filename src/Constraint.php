@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Dmcz\FilterBlocks;
+namespace Dmcz\LogicExpr;
 
-use Dmcz\FilterBlocks\Compilers\Explainer;
+use Dmcz\LogicExpr\Compilers\Explainer;
 
 class Constraint extends ExpressionTree
 {
@@ -28,6 +28,56 @@ class Constraint extends ExpressionTree
     public function orEqual(mixed $value): static
     {
         return $this->equal($value, Logic::OR);
+    }
+
+     public function greaterThan(mixed $value, Logic $logic = Logic::AND): static
+    {
+        return $this->append(Expr::greaterThan($this->name, $value), $logic);
+    }
+
+    public function orGreaterThan(mixed $value): static
+    {
+        return $this->greaterThan($value, Logic::OR);
+    }
+
+    public function greaterEqual(mixed $value, Logic $logic = Logic::AND): static
+    {
+        return $this->append(Expr::greaterEqual($this->name, $value), $logic);
+    }
+
+    public function orGreaterEqual(mixed $value): static
+    {
+        return $this->greaterEqual($value, Logic::OR);
+    }
+
+    public function lessThan(mixed $value, Logic $logic = Logic::AND): static
+    {
+        return $this->append(Expr::lessThan($this->name, $value), $logic);
+    }
+
+    public function orLessThan(mixed $value): static
+    {
+        return $this->lessThan($value, Logic::OR);
+    }
+
+    public function lessEqual(mixed $value, Logic $logic = Logic::AND): static
+    {
+        return $this->append(Expr::lessEqual($this->name, $value), $logic);
+    }
+
+    public function orLessEqual(mixed $value): static
+    {
+        return $this->lessEqual($value, Logic::OR);
+    }
+
+    public function in(array $value, Logic $logic = Logic::AND): static
+    {
+        return $this->append(Expr::in($this->name, $value), $logic);
+    }
+
+    public function orIn(array $value): static
+    {
+        return $this->in($value, Logic::OR);
     }
 
     public function group(callable $callback, Logic $logic = Logic::AND): static
