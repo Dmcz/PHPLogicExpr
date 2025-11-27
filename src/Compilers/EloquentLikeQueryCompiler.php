@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dmcz\LogicExpr\Compilers;
 
+use Closure;
 use Exception;
 use Dmcz\LogicExpr\Logic;
 use Dmcz\LogicExpr\Literal;
@@ -16,6 +17,35 @@ use Dmcz\LogicExpr\Filter;
 
 class EloquentLikeQueryCompiler
 {
+    /**
+     * @param ?Closure(string):string $nameHandler The handler for field names in the where condition. Example: function(string $name): string
+     * @param ?Closure(string,mixed):mixed $valueHandler The handler for field values in the where condition. Example: function(mixed $value, string $name): mixed
+     *
+     * @example
+     * $nameHandler = function($name) {
+     *     return 'prefix_' . $name;
+     * };
+     *
+     * $valueHandler = function($name, $value) {
+     *     if ($name === 'age') {
+     *         return (int) $value;
+     *     }
+     *
+     *     if ($value instanceof DataTime){
+     *         return $value->format(DateTime::ATOM);
+     *     }
+     *     return $value;
+     * };
+     *
+     * $processor = new EloquentLikeQueryCompiler($nameHandler, $valueHandler);
+     */
+    public function __construct(
+        public readonly ?Closure $nameHandler = null,
+        public readonly ?Closure $valueHandler = null,
+    ) {
+    }
+
+
     public function compile(Expression|ExpressionTree $expression, $query)
     {   
         if ($expression instanceof Expression){
@@ -125,8 +155,7 @@ class EloquentLikeQueryCompiler
 
     public function compileExpression(Expression $expression, $query, Logic $logic)
     {
-        $left = $this->ensureOperand($expression->left);
-        $right = $this->ensureOperand($expression->right);
+        [$left, $right]= $this->ensureOperand($expression->left, $expression->right);
 
         switch ($expression->operator) {
             case Operator::EQ:
@@ -173,14 +202,50 @@ class EloquentLikeQueryCompiler
         };
     }
 
-    public function ensureOperand(Identifier|Literal|null $operand): mixed
+    public function ensureOperand(Identifier|Literal|null $left, Identifier|Literal|null $right): array
     {
-        if($operand instanceof Identifier){
-            return $operand->name;
-        }else if($operand instanceof Literal){
-            return $operand->value;
+        $leftIsId  = $left instanceof Identifier;
+        $rightIsId = $right instanceof Identifier;
+
+        if ($leftIsId && $rightIsId) { // 两个都是字段
+            return [
+                $this->ensureName($left->name),
+                $this->ensureName($right->name),
+            ];
+        } elseif ($leftIsId) { // 左边是字段
+            return [
+                $this->ensureName($left->name),
+                $this->ensureValue($left->name, $right instanceof Literal ? $right->value : null),
+            ];
+        } elseif ($rightIsId) { // 右边是字段
+            return [
+                $this->ensureValue($right->name, $left instanceof Literal ? $left->value : null),
+                $this->ensureName($right->name),
+            ];
+        }
+
+        // 都是值
+        return [
+            $left instanceof Literal ? $left->value : $left,
+            $right instanceof Literal ? $right->value : $right,
+        ];
+    }
+
+    protected function ensureName(string $name): string
+    {
+        if($this->nameHandler !== null){
+            return call_user_func($this->nameHandler, $name);
         }else{
-            return $operand;
+            return $name;
+        }
+    }
+
+    protected function ensureValue(string $name, mixed $value): mixed
+    {
+        if($this->valueHandler !== null){
+            return call_user_func($this->valueHandler, $name, $value);
+        }else{
+            return $value;
         }
     }
 }

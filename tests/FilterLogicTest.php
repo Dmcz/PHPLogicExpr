@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  * @internal
  * @coversNothing
  */
-class FilterSyntaxTest extends TestCase
+class FilterLogicTest extends TestCase
 {   
     /**
      * @param string $expected
@@ -89,6 +89,14 @@ class FilterSyntaxTest extends TestCase
                         $filter = new Filter();
                         $filter->foo = "a";
                         $filter->where('bar', "b");
+                        return [$filter, "same"];
+                    },
+                    function(){
+                        $filter = new Filter();
+                        $filter->foo = "a";
+                        $filter->where(function(Filter $filter){
+                            $filter->bar = "b";
+                        });
                         return [$filter, "same"];
                     },
                     // NOTE: 会优先解析约束，所以这里的输出为: 'bar = "b" and foo = "a"'
@@ -176,7 +184,7 @@ class FilterSyntaxTest extends TestCase
                         });
                         return [$filter, "same"];
                     },
-                    // // 全部是约束
+                    // 全部是约束
                     function(){
                         $filter = new Filter();
                         $filter->foo = (new Constraint("foo"))->in([1,2,3]);

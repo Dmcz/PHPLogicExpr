@@ -59,6 +59,12 @@ class ConditionLogicTest extends TestCase
                 ],
             ],
             [
+                'expected' => '(foo = "a" and bar = "b") or baz = "c"',
+                'builders' => [
+                    fn () => (new Condition())->where(fn (Condition $condition) => $condition->where('foo', 'a')->where('bar', 'b'))->orWhere('baz', 'c'),
+                ],
+            ],
+            [
                 'expected' => '(foo = "a" or foo = "b") and (bar = "b" or baz = "c")',
                 'builders' => [
                     fn () => (new Condition())->where(fn (Condition $condition) => $condition->where('foo', 'a')->orWhere('foo', 'b'))->where(fn (Condition $condition) => $condition->where('bar', 'b')->orWhere('baz', 'c')),
