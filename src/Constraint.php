@@ -30,7 +30,7 @@ class Constraint extends ExpressionTree
         return $this->equal($value, Logic::OR);
     }
 
-     public function greaterThan(mixed $value, Logic $logic = Logic::AND): static
+    public function greaterThan(mixed $value, Logic $logic = Logic::AND): static
     {
         return $this->append(Expr::greaterThan($this->name, $value), $logic);
     }

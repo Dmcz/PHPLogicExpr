@@ -70,7 +70,7 @@ class ConditionLogicTest extends TestCase
                     fn () => (new Condition())->where(fn (Condition $condition) => $condition->where('foo', 'a')->orWhere('foo', 'b'))->where(fn (Condition $condition) => $condition->where('bar', 'b')->orWhere('baz', 'c')),
                 ],
             ],
-            [   
+            [
                 // 多余的括号会被移除
                 'expected' => 'foo = 1 or (foo = 2 and bar = 3) or (foo = 3 and bar = 4) or baz in 7,8,9',
                 'builders' => [
