@@ -6,6 +6,9 @@ namespace Dmcz\LogicExpr;
 
 use Dmcz\LogicExpr\Compilers\Explainer;
 
+/**
+ * @template T
+ */
 class Constraint extends ExpressionTree
 {
     /**
@@ -19,67 +22,106 @@ class Constraint extends ExpressionTree
         $this->explainer = new Explainer();
     }
 
-    public function equal(mixed $value, Logic $logic = Logic::AND): static
+    /**
+     * @param T $value
+     */
+    public function equal($value, Logic $logic = Logic::AND): static
     {
         $this->append(Expr::equal($this->name, $value), $logic);
         return $this;
     }
 
-    public function orEqual(mixed $value): static
+    /**
+     * @param T $value
+     */
+    public function orEqual($value): static
     {
         return $this->equal($value, Logic::OR);
     }
 
-    public function greaterThan(mixed $value, Logic $logic = Logic::AND): static
+    /**
+     * @param T $value
+     */
+    public function greaterThan($value, Logic $logic = Logic::AND): static
     {
         return $this->append(Expr::greaterThan($this->name, $value), $logic);
     }
 
-    public function orGreaterThan(mixed $value): static
+    /**
+     * @param T $value
+     */
+    public function orGreaterThan($value): static
     {
         return $this->greaterThan($value, Logic::OR);
     }
 
-    public function greaterEqual(mixed $value, Logic $logic = Logic::AND): static
+    /**
+     * @param T $value
+     */
+    public function greaterEqual($value, Logic $logic = Logic::AND): static
     {
         return $this->append(Expr::greaterEqual($this->name, $value), $logic);
     }
 
-    public function orGreaterEqual(mixed $value): static
+    /**
+     * @param T $value
+     */
+    public function orGreaterEqual($value): static
     {
         return $this->greaterEqual($value, Logic::OR);
     }
 
-    public function lessThan(mixed $value, Logic $logic = Logic::AND): static
+    /**
+     * @param T $value
+     */
+    public function lessThan($value, Logic $logic = Logic::AND): static
     {
         return $this->append(Expr::lessThan($this->name, $value), $logic);
     }
 
-    public function orLessThan(mixed $value): static
+    /**
+     * @param T $value
+     */
+    public function orLessThan($value): static
     {
         return $this->lessThan($value, Logic::OR);
     }
 
-    public function lessEqual(mixed $value, Logic $logic = Logic::AND): static
+    /**
+     * @param T $value
+     */
+    public function lessEqual($value, Logic $logic = Logic::AND): static
     {
         return $this->append(Expr::lessEqual($this->name, $value), $logic);
     }
 
-    public function orLessEqual(mixed $value): static
+    /**
+     * @param T $value
+     */
+    public function orLessEqual($value): static
     {
         return $this->lessEqual($value, Logic::OR);
     }
 
+    /**
+     * @param T[] $value
+     */
     public function in(array $value, Logic $logic = Logic::AND): static
     {
         return $this->append(Expr::in($this->name, $value), $logic);
     }
 
+    /**
+     * @param T[] $value
+     */
     public function orIn(array $value): static
     {
         return $this->in($value, Logic::OR);
     }
 
+    /**
+     * @param callable(static):void $callback
+     */
     public function group(callable $callback, Logic $logic = Logic::AND): static
     {
         $constraint = new static($this->name);
@@ -89,11 +131,17 @@ class Constraint extends ExpressionTree
         return $this;
     }
 
+    /**
+     * @param callable(static):void $callback
+     */
     public function or(callable $callback): static
     {
         return $this->group($callback, Logic::OR);
     }
 
+    /**
+     * @param callable(static):void $callback
+     */
     public function and(callable $callback): static
     {
         return $this->group($callback, Logic::AND);
