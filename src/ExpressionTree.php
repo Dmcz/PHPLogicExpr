@@ -25,7 +25,7 @@ use LogicException;
 class ExpressionTree
 {
     /**
-     * @var Expression[]|ExpressionTree
+     * @var Expression|ExpressionTree[]
      */
     protected array $expressions = [];
 
@@ -49,6 +49,20 @@ class ExpressionTree
     public function countExpressions(): int
     {
         return count($this->expressions);
+    }
+
+    public function isEmpty(): bool
+    {
+        foreach ($this->expressions as $expression) {
+            if ($expression instanceof Expression) {
+                return false;
+            }
+            if (! $expression->isEmpty()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function getLogic(): ?Logic

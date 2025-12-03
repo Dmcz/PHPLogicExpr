@@ -6,6 +6,7 @@ namespace Dmcz\LogicExpr\Tests;
 
 use Dmcz\LogicExpr\Constraint;
 use Dmcz\LogicExpr\Filter;
+use Dmcz\LogicExpr\Logic;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -15,11 +16,49 @@ use PHPUnit\Framework\TestCase;
  */
 class FilterLogicTest extends TestCase
 {
+    public function testEmpty()
+    {
+        $this->assertTrue((new Filter())->isEmpty());
+
+        $case2 = new Filter();
+        $case2->foo;
+        $this->assertTrue($case2->isEmpty());
+
+        $case3 = new Filter();
+        $case3->foo = new Constraint('foo');
+        $this->assertTrue($case3->isEmpty());
+
+        $case4 = new Filter();
+        $case4->foo = 1;
+        $this->assertFalse($case4->isEmpty());
+
+        $case5 = new Filter();
+        $case5->where('foo', 1);
+        $this->assertFalse($case5->isEmpty());
+
+        $case6 = new Filter();
+        $case6->group(fn () => 1 == 1, Logic::AND);
+        $this->assertTrue($case6->isEmpty());
+
+        $case7 = new Filter();
+        $case7->where(function (Filter $filter) {
+            $filter->where(function (Filter $filter) {
+                $filter->where(function (Filter $filter) {
+                    $filter->where(function (Filter $filter) {
+                        $filter->where(function (Filter $filter) {
+                        });
+                    });
+                });
+            });
+        });
+        $this->assertTrue($case7->isEmpty());
+    }
+
     /**
      * @param array<callable():Filter> $builders
      */
     #[DataProvider('provider')]
-    public function testSyntax(string $expected, array $builders)
+    public function testLogic(string $expected, array $builders)
     {
         foreach ($builders as $index => $builder) {
             [$filter, $state] = $builder();
@@ -208,6 +247,37 @@ class FilterLogicTest extends TestCase
                         })->where(function (Filter $filter) {
                             $filter->greaterEqual('qux', 10)->lessEqual('qux', 15);
                         });
+                        return [$filter, 'same'];
+                    },
+                ],
+            ],
+            [
+                'expected' => '',
+                'builders' => [
+                    function () {
+                        $filter = new Filter();
+
+                        return [$filter, 'same'];
+                    },
+                    function () {
+                        $filter = new Filter();
+                        $filter->foo;
+
+                        return [$filter, 'same'];
+                    },
+                    function () {
+                        $filter = new Filter();
+                        $filter->foo = (new Constraint('foo'));
+
+                        return [$filter, 'same'];
+                    },
+                    function () {
+                        $filter = new Filter();
+                        $filter->where(function (Filter $filter) {
+                            $filter->where(function (Filter $filter) {
+                            });
+                        });
+
                         return [$filter, 'same'];
                     },
                 ],

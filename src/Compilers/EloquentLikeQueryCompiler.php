@@ -66,6 +66,11 @@ class EloquentLikeQueryCompiler
 
         // DESIGN NOTE：区分多种情况，主要是避免没有意义的括号
 
+        // 空filter
+        if ($constraintTotal == 0 && $expressionTotal == 0) {
+            return;
+        }
+
         // 没有约束
         if ($constraintTotal == 0 && $expressionTotal > 0) {
             $this->compileExpressionTree($filter, $query);

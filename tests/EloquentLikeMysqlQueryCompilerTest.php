@@ -37,13 +37,26 @@ class EloquentLikeMysqlQueryCompilerTest extends TestCase
                 $grammar = $this->makeGrammar($driver);
 
                 $selectSql = $grammar->compileSelect($query);
-                $this->assertSame("select * where {$exceptWhere}", $selectSql, "Case index = {$index}, Driver = {$driver}");
+                if ($exceptWhere !== '') {
+                    $this->assertSame("select * where {$exceptWhere}", $selectSql, "Case index = {$index}, Driver = {$driver}");
+                } else {
+                    $this->assertSame('select *', $selectSql, "Case index = {$index}, Driver = {$driver}");
+                }
 
                 $updateSql = $grammar->compileUpdate($query, []);
-                $this->assertSame("update `` set  where {$exceptWhere}", $updateSql, "Case index = {$index}, Driver = {$driver}");
+                if ($exceptWhere !== '') {
+                    // 注意这里set和where之间有两个空格
+                    $this->assertSame("update `` set  where {$exceptWhere}", $updateSql, "Case index = {$index}, Driver = {$driver}");
+                } else {
+                    $this->assertSame('update `` set', $updateSql, "Case index = {$index}, Driver = {$driver}");
+                }
 
                 $deleteSql = $grammar->compileDelete($query);
-                $this->assertSame("delete from `` where {$exceptWhere}", $deleteSql, "Case index = {$index}, Driver = {$driver}");
+                if ($exceptWhere !== '') {
+                    $this->assertSame("delete from `` where {$exceptWhere}", $deleteSql, "Case index = {$index}, Driver = {$driver}");
+                } else {
+                    $this->assertSame('delete from ``', $deleteSql, "Case index = {$index}, Driver = {$driver}");
+                }
             }
         }
     }
@@ -145,6 +158,37 @@ class EloquentLikeMysqlQueryCompilerTest extends TestCase
                         $filter->where(function (Filter $filter) {
                             $filter->baz->greaterThan(0)->orLessThan(10);
                         });
+                        return $filter;
+                    },
+                ],
+            ],
+            [
+                'exceptWhere' => '',
+                'exceptBinds' => [],
+                'drivers' => ['hyperf'],
+                'builders' => [
+                    function () {
+                        return new Filter();
+                    },
+                    function () {
+                        $filter = new Filter();
+                        $filter->foo;
+
+                        return $filter;
+                    },
+                    function () {
+                        $filter = new Filter();
+                        $filter->foo = (new Constraint('foo'));
+
+                        return $filter;
+                    },
+                    function () {
+                        $filter = new Filter();
+                        $filter->where(function (Filter $filter) {
+                            $filter->where(function (Filter $filter) {
+                            });
+                        });
+
                         return $filter;
                     },
                 ],

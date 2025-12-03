@@ -95,4 +95,15 @@ class Filter extends Condition
             throw new Exception("The field '{$name}' not allowed in " . get_class($this), 1);
         }
     }
+
+    public function isEmpty(): bool
+    {
+        foreach ($this->constraints as $constraint) {
+            if ($constraint->countExpressions() > 0) {
+                return false;
+            }
+        }
+
+        return parent::isEmpty();
+    }
 }

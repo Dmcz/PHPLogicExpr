@@ -37,6 +37,11 @@ class Explainer
 
         // DESIGN NOTE: 区分多种情况，主要是避免没有意义的括号
 
+        // 一个空的Filter
+        if ($constraintTotal == 0 && $expressionTotal == 0) {
+            return '';
+        }
+
         // 没有约束
         if ($constraintTotal == 0 && $expressionTotal > 0) {
             return $this->compileExpressionTree($filter);
