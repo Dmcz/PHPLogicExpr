@@ -99,7 +99,7 @@ class Filter extends Condition
     public function isEmpty(): bool
     {
         foreach ($this->constraints as $constraint) {
-            if ($constraint->countExpressions() > 0) {
+            if (! $constraint->isEmpty()) {
                 return false;
             }
         }

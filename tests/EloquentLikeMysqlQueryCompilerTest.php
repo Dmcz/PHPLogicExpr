@@ -8,6 +8,7 @@ use Dmcz\LogicExpr\Compilers\EloquentLikeQueryCompiler;
 use Dmcz\LogicExpr\Condition;
 use Dmcz\LogicExpr\Constraint;
 use Dmcz\LogicExpr\Filter;
+use Dmcz\LogicExpr\Logic;
 use Hyperf\Database\Connection as HyperfConnection;
 use Hyperf\Database\Query\Builder as HyperfBuilder;
 use Hyperf\Database\Query\Grammars\MySqlGrammar as HyperfMysqlGrammar;
@@ -173,6 +174,15 @@ class EloquentLikeMysqlQueryCompilerTest extends TestCase
                     function () {
                         $filter = new Filter();
                         $filter->foo;
+
+                        return $filter;
+                    },
+                    function () {
+                        $filter = new Filter();
+                        $filter->foo->group(function (Constraint $constraint) {
+                            $constraint->group(function (Constraint $constraint) {
+                            }, Logic::AND);
+                        }, Logic::AND);
 
                         return $filter;
                     },

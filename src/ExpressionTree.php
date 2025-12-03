@@ -25,7 +25,7 @@ use LogicException;
 class ExpressionTree
 {
     /**
-     * @var Expression|ExpressionTree[]
+     * @var array<int,Expression|ExpressionTree>
      */
     protected array $expressions = [];
 

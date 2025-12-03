@@ -52,6 +52,15 @@ class FilterLogicTest extends TestCase
             });
         });
         $this->assertTrue($case7->isEmpty());
+
+        $case8 = new Filter();
+        $case8->foo->group(function (Constraint $constraint) {
+            $constraint->group(function (Constraint $constraint) {
+                $constraint->group(function (Constraint $constraint) {
+                }, Logic::AND);
+            }, Logic::AND);
+        }, Logic::AND);
+        $this->assertTrue($case8->isEmpty());
     }
 
     /**
@@ -262,6 +271,15 @@ class FilterLogicTest extends TestCase
                     function () {
                         $filter = new Filter();
                         $filter->foo;
+
+                        return [$filter, 'same'];
+                    },
+                    function () {
+                        $filter = new Filter();
+                        $filter->foo->group(function (Constraint $constraint) {
+                            $constraint->group(function (Constraint $constraint) {
+                            }, Logic::AND);
+                        }, Logic::AND);
 
                         return [$filter, 'same'];
                     },
